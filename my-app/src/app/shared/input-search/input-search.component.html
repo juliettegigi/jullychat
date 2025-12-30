@@ -1,0 +1,14 @@
+<div class="container">
+   <mat-form-field appearance="outline" class="w-full">
+      <mat-label>Buscar</mat-label>
+      <input class="rounded-pill" 
+             matInput placeholder="Escribe para buscar..." 
+             [(ngModel)]="terminoBusqueda"
+             (input)="buscar()">
+
+      <!-- Botón con ícono a la derecha -->
+      <button mat-icon-button matSuffix aria-label="Buscar" (click)="buscar()">
+        <mat-icon>search</mat-icon>
+      </button>
+    </mat-form-field>
+</div>

@@ -1,0 +1,12 @@
+<div class="row h-100">
+    <app-menu class="col-auto"></app-menu>
+    <app-barra-lateral class="col"
+                       (usuarioSeleccionado)="onUsuarioSeleccionado($event)"
+                       [chats]="chats"
+                       >
+    </app-barra-lateral>
+    <app-chat class="col" [usuarioReceptor]="usuarioSeleccionado"
+              [mensajes]="mensajes"
+              [idDelChat]="idDelChat"   >
+    </app-chat>
+</div>

@@ -1,0 +1,33 @@
+/* You can add global styles to this file, and also import other style files */
+
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+
+:host {
+  display: flex;
+  flex-direction: column;
+  height: 100%;     /* Ocupa toda la altura disponible */
+}
+
+app-menu-superior {
+  flex-shrink: 0;   /* No se achica */
+}
+
+app-mensajes {
+  flex-grow: 1;     /* Ocupa todo el espacio sobrante */
+  overflow-y: auto;
+  background-color:#F5F1EB;
+}
+
+app-menu-inferior {
+  flex-shrink: 0;   /* Se queda abajo */
+   background-color:#F5F1EB;
+   padding: 0.5rem;
+}
+
+app-chat{
+    display: flex;
+  flex-direction: column;
+  min-height: 100%;  /* Asegura que ocupe al menos toda la altura de la pantalla */
+}

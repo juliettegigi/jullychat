@@ -1,0 +1,17 @@
+<div class="contenedor">
+
+     @if(mensajes.length){
+                      <div>
+                          <h3>Resultados:</h3>
+                          <ul>
+                             @for (mensaje of mensajes; track $index) {
+                                       <li>
+                                         {{mensaje.contenido}}{{mensaje.createdAt | date:'short'  }}
+                                       </li>
+                             }
+                            
+                          </ul>
+                     </div>
+               }
+</div>
+

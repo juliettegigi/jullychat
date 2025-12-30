@@ -1,0 +1,15 @@
+@if(resultados.length){
+                      <div>
+                          <h3>Resultados:</h3>
+                          <ul>
+                             @for (user of resultados; track $index) {
+                                       <li (click)="clickLi?.(user)">{{ user.userName }} ({{ user.email }})
+                                          @if(btn){
+                                            <button mat-button color="accent" (click)="btn(user)">Agregar</button>
+                                          }
+                                       </li>
+                             }
+                            
+                          </ul>
+                     </div>
+               }
