@@ -1,0 +1,30 @@
+<form [formGroup]="formContacto" (ngSubmit)="buscarUsuario()">
+  <mat-form-field appearance="fill">
+    <mat-label>UserName o Email</mat-label>
+    <input matInput formControlName="termino" placeholder="userName o email">
+  </mat-form-field>
+
+  <mat-form-field appearance="fill">
+    <mat-label>Alias</mat-label>
+    <input matInput formControlName="alias" placeholder="Alias (opcional)">
+  </mat-form-field>
+
+  <button mat-raised-button color="primary" type="submit" [disabled]="buscando">
+    {{ buscando ? 'Buscando...' : 'Agregar' }}
+  </button>
+</form>
+
+@if(resultados.length){
+        <div>
+             <h3>Resultados:</h3>
+             <ul>
+                @for (user of resultados; track $index) {
+                          <li>{{ user.userName }} ({{ user.email }})
+                              <button mat-button color="accent" (click)="agregarContacto(user)">Agregar</button>
+                          </li>
+                }
+               
+             </ul>
+        </div>
+}
+

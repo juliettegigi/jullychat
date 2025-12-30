@@ -1,0 +1,34 @@
+
+<div>
+  <ul>
+     @for (chat of chats; track $index) {
+      <li (click)="clickLi?.(chat.otroUsuario)">
+        <div class="row">  
+            <div class="col">
+                <div>
+                   <img  draggable="false" src="img/avatarDefault.jpg"  />
+               </div>
+               <div>
+                   <span>{{ chat.otroUsuario.userName }}</span>
+               </div> 
+               <div>
+                   <span>{{ chat.ultimoMensaje}}</span>
+               </div> 
+               <div>
+                   <span>{{ chat.fecha}}</span>
+               </div>
+            </div>
+            @if(chat.isRead===false){     
+                <div class="col d-flex align-items-center justify-content-end position-relative">
+                  <span class="p-2 bg-success border border-light rounded-circle">
+                    <span class="visually-hidden">New alerts</span>
+                  </span>
+                </div>
+            }
+        </div>     
+      </li>
+     }
+    
+  </ul>
+</div>
+               
