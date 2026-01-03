@@ -2,20 +2,22 @@
 <div>
   <ul>
      @for (chat of chats; track $index) {
-      <li (click)="clickLi?.(chat.otroUsuario)">
+      <li (click)="clickLi?.(chat)" [ngClass]="{'chat-no-leido': !chat.isRead,
+                                                            'chat-leido': chat.isRead
+  }">
         <div class="row">  
             <div class="col">
                 <div>
-                   <img  draggable="false" src="img/avatarDefault.jpg"  />
+                   <img  draggable="false" [src]="chat.otroUsuario.avatar ? chat.otroUsuario.avatar : 'img/avatarDefault.jpg'" />
                </div>
                <div>
                    <span>{{ chat.otroUsuario.userName }}</span>
                </div> 
                <div>
-                   <span>{{ chat.ultimoMensaje}}</span>
+                   <span>{{ chat.ultimoMensaje?.contenido}}</span>
                </div> 
                <div>
-                   <span>{{ chat.fecha}}</span>
+                   <span>{{ chat.createdAt | date:'dd/MM/yyyy HH:mm' }}</span>
                </div>
             </div>
             @if(chat.isRead===false){     

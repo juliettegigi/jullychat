@@ -1,0 +1,141 @@
+.google-button-container {
+  position: relative;
+  z-index: 10;
+  margin-top: 1rem;
+}
+
+
+/* Fondo oscuro gótico */
+.login-page {
+  position: relative;
+  min-height: 100vh;
+  background:
+    linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.8)),
+    url('/img/gotico.avif') center center / cover no-repeat;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: 'UnifrakturCook', serif;
+  color: #f5f5f5;
+  overflow: hidden;
+}
+
+/* Nieblas animadas */
+.fog {
+  position: absolute;
+  width: 200%;
+  height: 200%;
+  top: -50%;
+  left: -50%;
+  background: radial-gradient(rgba(255,255,255,0.05), transparent 70%);
+  animation: drift 60s linear infinite;
+  z-index: 0;
+}
+
+.fog1 { animation-duration: 60s; }
+.fog2 { animation-duration: 100s; transform: rotate(90deg); }
+
+@keyframes drift {
+  0% { transform: translate(0,0) rotate(0deg); }
+  100% { transform: translate(50%,20%) rotate(360deg); }
+}
+
+/* Gargolas */
+.gargola {
+  position: absolute;
+  top: 50px;
+  width: 120px;
+  z-index: 2;
+  opacity: 0.9;
+  transition: transform 0.5s;
+}
+.gargola-left { left: 10px; }
+.gargola-right { right: 10px; transform: scaleX(-1); }
+
+.gargola-left:hover, .gargola-right:hover {
+  transform: scale(1.1) rotate(-5deg);
+}
+
+/* Caja del login */
+.login-container {
+  position: relative;
+  background: rgba(0,0,0,0.85);
+  padding: 3rem 2rem;
+  max-width: 400px;
+  width: 100%;
+  border: 3px solid #5a1a1a;
+  box-shadow: 0 0 30px black, 0 0 40px #5a1a1a inset;
+  border-radius: 12px;
+  z-index: 1;
+  text-align: center;
+  animation: floatIn 1s ease-out forwards;
+  opacity: 0;
+}
+
+/* Animación de entrada */
+@keyframes floatIn {
+  0% { opacity: 0; transform: translateY(-50px) scale(0.9); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* Título */
+.login-title {
+  font-size: 2.8rem;
+  margin-bottom: 1.5rem;
+  color: #ffdddd;
+  text-shadow: 2px 2px 8px black;
+  letter-spacing: 2px;
+}
+
+/* Inputs */
+.gothic-input .mat-form-field-outline {
+  border-color: #5a1a1a !important;
+}
+.gothic-input input {
+  color: #f5f5f5;
+  font-family: 'UnifrakturCook', serif;
+}
+
+/* Botón estilo gótico */
+.gothic-button {
+  background-color: #222;
+  color: #f5f5f5;
+  border: 2px solid #5a1a1a;
+  padding: 0.8rem 1rem;
+  font-family: 'UnifrakturCook', serif;
+  transition: 0.3s;
+  box-shadow: 0 0 10px #5a1a1a;
+}
+.gothic-button:hover {
+  background-color: #5a1a1a;
+  color: #ffdddd;
+  box-shadow: 0 0 20px #ff5555;
+}
+
+/* Divider */
+.divider {
+  margin: 1.5rem 0;
+  position: relative;
+  text-align: center;
+  font-family: 'UnifrakturCook', serif;
+}
+.divider span {
+  background: #0a0a0a;
+  padding: 0 1rem;
+  color: #ffdddd;
+}
+
+/* Botón de Google (renderizado por Google API) */
+.google-button-container {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+/* Mensaje de error */
+.error-message {
+  color: #ff5555;
+  margin: 0.5rem 0;
+  font-weight: bold;
+  text-shadow: 1px 1px 2px black;
+}

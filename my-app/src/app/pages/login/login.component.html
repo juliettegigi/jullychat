@@ -1,23 +1,43 @@
-<div class="login-container">
-  <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
-    <mat-form-field appearance="outline" class="full-width">
-      <mat-label>Email</mat-label>
-      <input matInput type="email" formControlName="email">
-      <mat-error *ngIf="loginForm.get('email')?.hasError('required')">El email es obligatorio</mat-error>
-      <mat-error *ngIf="loginForm.get('email')?.hasError('email')">Email inválido</mat-error>
-    </mat-form-field>
+<div class="login-page">
+  <!-- Nieblas animadas -->
+  <div class="fog fog1"></div>
+  <div class="fog fog2"></div>
 
-    <mat-form-field appearance="outline" class="full-width">
-      <mat-label>Contraseña</mat-label>
-      <input matInput type="password" formControlName="password">
-      <mat-error *ngIf="loginForm.get('password')?.hasError('required')">Contraseña obligatoria</mat-error>
-      <mat-error *ngIf="loginForm.get('password')?.hasError('minlength')">Mínimo 6 caracteres</mat-error>
-    </mat-form-field>
+  <!-- Gargolas decorativas -->
+  <img src="img/gargola.jpg" alt="Gárgola izquierda" class="gargola gargola-left">
+  <img src="img/gargola.jpg" alt="Gárgola derecha" class="gargola gargola-right">
 
-    <div *ngIf="loginError" class="error-message">{{ loginError }}</div>
+  <div class="login-container">
+    <h1 class="login-title">Bienvenido</h1>
+    
+    <!-- Formulario tradicional -->
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+      
+      <mat-form-field appearance="outline" class="full-width gothic-input">
+        <mat-label>Email</mat-label>
+        <input matInput type="email" formControlName="email">
+        <mat-error *ngIf="loginForm.get('email')?.hasError('required')">El email es obligatorio</mat-error>
+        <mat-error *ngIf="loginForm.get('email')?.hasError('email')">Email inválido</mat-error>
+      </mat-form-field>
 
-    <button mat-raised-button color="primary" type="submit" class="full-width" [disabled]="loginForm.invalid || loading">
-      {{ loading ? 'Ingresando...' : 'Iniciar sesión' }}
-    </button>
-  </form>
+      <mat-form-field appearance="outline" class="full-width gothic-input">
+        <mat-label>Contraseña</mat-label>
+        <input matInput type="password" formControlName="pass">
+        <mat-error *ngIf="loginForm.get('pass')?.hasError('required')">Contraseña obligatoria</mat-error>
+        <mat-error *ngIf="loginForm.get('pass')?.hasError('minlength')">Mínimo 6 caracteres</mat-error>
+      </mat-form-field>
+
+      <div *ngIf="loginError" class="error-message">{{ loginError }}</div>
+
+      <button mat-raised-button type="submit" class="full-width gothic-button" [disabled]="loginForm.invalid || loading">
+        {{ loading ? 'Ingresando...' : 'Iniciar sesión' }}
+      </button>
+    </form>
+
+    <!-- Divider -->
+    <div class="divider"><span>o</span></div>
+
+    <!-- Botón de Google -->
+    <div id="google-signin-button" class="google-button-container"></div>
+  </div>
 </div>

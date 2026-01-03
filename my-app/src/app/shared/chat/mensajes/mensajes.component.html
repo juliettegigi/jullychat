@@ -1,17 +1,30 @@
-<div class="contenedor">
+<div class="chat-container">
 
-     @if(mensajes.length){
-                      <div>
-                          <h3>Resultados:</h3>
-                          <ul>
-                             @for (mensaje of mensajes; track $index) {
-                                       <li>
-                                         {{mensaje.contenido}}{{mensaje.createdAt | date:'short'  }}
-                                       </li>
-                             }
-                            
-                          </ul>
-                     </div>
-               }
+  @if (mensajes.length) {
+    <div class="chat-messages">
+
+      @for (mensaje of mensajes; track $index) {
+
+        <div
+          class="mensaje"
+          [ngClass]="mensaje.emisorId == authService.userId
+            ? 'mensaje-propio'
+            : 'mensaje-ajeno'"
+        >
+          <div class="burbuja">
+            <span class="texto">
+              {{ mensaje.contenido }}
+            </span>
+
+            <span class="hora">
+              {{ mensaje.createdAt | date:'HH:mm' }}
+            </span>
+          </div>
+        </div>
+
+      }
+
+    </div>
+  }
+
 </div>
-

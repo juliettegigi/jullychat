@@ -22,7 +22,8 @@ import { Mensaje } from '../../core/models/mensaje';
   styleUrl: './barra-lateral.component.css'
 })
 export class BarraLateralComponent {
- @Output() usuarioSeleccionado = new EventEmitter<User>();
+ @Output() usuarioSeleccionado = new EventEmitter<ObjetoRtaGetAllChats>();
+ @Output() usuarioSeleccionadParaNuevoChat = new EventEmitter<User>();
  @Input() chats: ObjetoRtaGetAllChats[] = [];
 
   vista='inicio'
@@ -161,17 +162,17 @@ export class BarraLateralComponent {
       }
 
  // le envío a la lista usuario la función para cuando hagan click en un li
-      clickLiNuevoMsg=(user: User)=>{
-        console.log('Usuario clickeado para nuevo mensaje:', user);
+      clickLiNuevoMsg=(user:User)=>{
+        console.log('Usuario clickeado para nuevo mensaje:');
         // le emito al componente padre para que cargue al componente ChatComponent con el chat entre ambos, los mensajes" y que cargue al componente "BarraLateral" con la lista de contactos con las que tuve un chat
-        this.usuarioSeleccionado.emit(user);
+        this.usuarioSeleccionadParaNuevoChat.emit(user);
 
       }
 
-      onClickChatConUsuario=(user: User)=>{
-        console.log('chatClickeado:', user);
+      onClickChatConUsuario=(chat: ObjetoRtaGetAllChats)=>{
+        console.log('chatClickeado:', chat.otroUsuario);
         // le emito al componente padre para que cargue al componente ChatComponent con el chat entre ambos, los mensajes" y que cargue al componente "BarraLateral" con la lista de contactos con las que tuve un chat
-        this.usuarioSeleccionado.emit(user);
+        this.usuarioSeleccionado.emit(chat);
 
       }
 }

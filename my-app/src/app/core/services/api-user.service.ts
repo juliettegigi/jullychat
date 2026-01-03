@@ -21,6 +21,14 @@ export class UserApiService {
     return this.http.post<rtaLogin>(`${this.apiUrlSesion}login`, { email, pass});
   }
 
+  // -------------------------------
+  // Nuevo método: login con Google
+  // -------------------------------
+    loginWithGoogle(id_token: string): Observable<rtaLogin> {
+    // El backend debe recibir { id_token } en el body
+    return this.http.post<rtaLogin>(`${this.apiUrlSesion}loginGoogle`, { id_token });
+  }
+
   
   // Obtener todos los usuarios
   getAll(): Observable<User[]> {

@@ -5,8 +5,9 @@ USE chat_app;
 
 CREATE TABLE users(
   id INT AUTO_INCREMENT PRIMARY KEY,
-  userName VARCHAR(15) NOT NULL,
-  pass VARCHAR(60) NOT NULL,
+  userName VARCHAR(254) NOT NULL,
+  pass VARCHAR(60) default null,
+  googleId VARCHAR(255) default null unique,
   email VARCHAR(254) NOT NULL unique,
   avatar VARCHAR(255), -- <--- AGREGADO
   createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
