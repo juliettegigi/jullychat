@@ -8,5 +8,6 @@ var router = express.Router();
 
 router.get('/all',[ validarJWT], 
     getMensajes);
+//router.patch('/isRead',[validarJWT], patchIsRead)
 
 module.exports = router;

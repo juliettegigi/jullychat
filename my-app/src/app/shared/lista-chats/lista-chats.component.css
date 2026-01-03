@@ -5,3 +5,10 @@ img{
     object-fit: cover;
 }
 
+.chat-no-leido{
+    background-color: #e0f7fa;
+}
+
+.chat-leido{
+    background-color: white;
+}

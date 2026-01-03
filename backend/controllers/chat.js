@@ -77,7 +77,7 @@ const getChatsByMsgContacto = async (req, res) => {
 getChatCon = async (req, res) => {
   try {
 
-    console.log("GET CHAT CON OTRO USUARIO");
+    console.log("controller -->> chat -->> getChatCon");
     const user1Id = req.user.id; // usuario logueado (lo sacás del token o sesión)
     const { user2Id } = req.query; // id del otro usuario con el que se quiere chatear
 
@@ -107,6 +107,8 @@ getChatCon = async (req, res) => {
         return res.status(200).json({chat:null,mensajes:[]});
        }
 
+      
+
     // 3️⃣ Si existe, busco todos los mensajes asociados a ese chat
     const mensajes = await Mensaje.findAll({
       where: { chatId: chat.id },
@@ -130,42 +132,40 @@ getChatCon = async (req, res) => {
 
 postChat = async (req, res) => {
   try {
+    const userId = req.user.id;
+    const { user2Id } = req.query;
 
-    console.log("post chat");
-    const user1Id = req.user.id; // usuario logueado (lo sacás del token o sesión)
-    const { user2Id } = req.query; // id del otro usuario con el que se quiere chatear
-
-    
     if (!user2Id) {
       return res.status(400).json({ msg: "Falta user2Id en la query" });
     }
 
-    // Buscar si ya existe un chat entre ambos (sin importar el orden)
+    // 🔑 ORDENAR SIEMPRE PRIMERO
+    const u1 = Math.min(userId, Number(user2Id));
+    const u2 = Math.max(userId, Number(user2Id));
+
+    // 🔍 Buscar chat existente
     let chat = await Chat.findOne({
       where: {
-        [Op.or]: [
-          { user1Id, user2Id },
-          { user1Id: user2Id, user2Id: user1Id }
-        ]
+        user1Id: u1,
+        user2Id: u2
       }
     });
 
-    // Si no existe, lo creamos
+    // ➕ Crear si no existe
     if (!chat) {
       chat = await Chat.create({
-        user1Id,
-        user2Id
+        user1Id: u1,
+        user2Id: u2
       });
 
-      console.log("Chat creado:", chat);
-    } else {
-      console.log("Chat ya existía:", chat);
+      console.log("Chat creado:", chat.id);
     }
 
     return res.status(200).json({
       msg: "Chat listo",
       chat
     });
+
   } catch (error) {
     console.error("ERROR en postChat:", error);
     res.status(500).json({ msg: "Error interno del servidor" });
@@ -233,10 +233,13 @@ const getAllChats = async (req, res) => {
 };
 
 
+
+
 module.exports={
     //userGet,userPatch,userDelete,userPut,
+    getAllChats,
     getChatsByMsgContacto,
     getChatCon, // retorna a un chat entre dos usuarios, el logueado y otro, con sus mensajes
+   
     postChat,
-    getAllChats
   }

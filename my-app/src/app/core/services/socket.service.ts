@@ -9,32 +9,47 @@ export class SocketService {   // <-- tiene que tener "export"
   private API_URL = getApiUrl(this.platformId);
 
   connect() {
-    if (!this.socket) {
-      
-          const token = localStorage.getItem('token'); // 🔥 obtenemos el token del login
-      
-          this.socket = io(this.API_URL, {
-            transports: ['websocket'],
-            auth: {
-              token: token  // 🔥 enviamos el token al backend
-            }
-          });
-        }
-  }
+  if (this.socket?.connected) return;
+
+  const token = localStorage.getItem('token');
+
+  this.socket = io(this.API_URL, {
+    transports: ['websocket'],
+    auth: { token }
+  });
+}
 
   emit(event: string, data?: any) {
     this.socket?.emit(event, data);
   }
 
   listen<T>(event: string): Observable<T> {
-    return new Observable((subscriber) => {
-      this.socket?.on(event, (data: T) => {
-        subscriber.next(data);
-      });
-    });
-  }
+  return new Observable<T>((subscriber) => {
+    if (!this.socket) return;
+
+    const handler = (data: T) => {
+      subscriber.next(data);
+    };
+
+    // 🚀 aseguramos que no haya duplicados
+    this.socket.off(event, handler);
+    this.socket.on(event, handler);
+
+    // 🧹 limpieza cuando Angular se desuscribe
+    return () => {
+      this.socket?.off(event, handler);
+    };
+  });
+}
+
+disconnect() {
+  this.socket?.disconnect();
+  this.socket = null;
+}
 
   on<T = any>(event: string, callback: (data: T) => void) {
     this.socket?.on(event, callback);
   }
+
+
 }

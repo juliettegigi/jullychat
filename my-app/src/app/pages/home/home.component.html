@@ -2,10 +2,11 @@
     <app-menu class="col-auto"></app-menu>
     <app-barra-lateral class="col"
                        (usuarioSeleccionado)="onUsuarioSeleccionado($event)"
+                       (usuarioSeleccionadParaNuevoChat)="onUsuarioSeleccionadoParaNuevoChat($event)"
                        [chats]="chats"
                        >
     </app-barra-lateral>
-    <app-chat class="col" [usuarioReceptor]="usuarioSeleccionado"
+    <app-chat class="col chat" [usuarioReceptor]="usuarioSeleccionado"
               [mensajes]="mensajes"
               [idDelChat]="idDelChat"   >
     </app-chat>

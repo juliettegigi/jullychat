@@ -11,6 +11,7 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   Chat.init({
+    
   }, {
     sequelize,
     modelName: 'Chat',

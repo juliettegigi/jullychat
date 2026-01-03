@@ -1,11 +1,11 @@
 const jwt=require('jsonwebtoken');
 
-const generarJWT=async(id='')=>{
+const generarJWT=async(id='',email='')=>{
     return new Promise((resolve,reject)=>{
-        const payload={userId:id};
+        const payload={userId:id,email};
         jwt.sign(payload,
                  process.env.SECRETORPRIVATEKEY,
-                 {expiresIn:'1h'},
+                 {expiresIn:'8h'},
                  (err,token)=>{
                     if(err){
                         console.log(err)

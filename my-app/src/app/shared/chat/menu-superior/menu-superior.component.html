@@ -1,6 +1,6 @@
 <div class="contenedor">
     <div>
-        <img  draggable="false" src="img/avatarDefault.jpg"  />
+        <img  draggable="false" [src]="contacto?.avatar ? contacto?.avatar : 'img/avatarDefault.jpg'"  />
     </div>
     <div>
         <span>{{ contacto?.userName }}</span>

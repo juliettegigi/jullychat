@@ -31,10 +31,24 @@ getAllChats(): Observable<RtaGetAllChats> {
   return this.http.get<RtaGetAllChats>(`${this.apiUrl}chats`);
 }
 
+patchIsRead(chatId: number): Observable<{ msg: string }> {
+  return this.http.patch<{ msg: string }>(
+    `${this.apiUrl}isRead`,
+    {}, // PATCH sin body
+    {
+      params: { chatId: chatId.toString() }
+    }
+  );
+}
+
+
+
 postChat(user2Id: number): Observable<RtaPost> {
   return this.http.post<RtaPost>(`${this.apiUrl}`, null, {
     params: { user2Id: user2Id.toString() }   
   });
 }
+
+
 
 }

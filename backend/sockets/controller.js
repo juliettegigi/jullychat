@@ -161,27 +161,35 @@ const socketController=(socket) => {
 
 
 
-        socket.on('mensajeEmisor',async({ChatId,contenido})=>{ 
-        try{
+        socket.on('mensajeEmisor',async({ChatId,contenido,user2Id})=>{ 
+          console.log("en el socketvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv -----------< ")
+        
+          try{
+
         const emisorId = socket.userId;
         // Buscar chat para saber quién es el receptor
-        const chat = await Chat.findByPk(ChatId);
+        let chat = await Chat.findByPk(ChatId);
         console.log("CHAT ID -----------< ",ChatId )
-        if (!chat) return;
+        if (!chat) { //crear chat
+
+          const u1 = Math.min(emisorId, user2Id);
+          const u2 = Math.max(emisorId, user2Id);
+          chat = await Chat.create({ user1Id: u1, user2Id:u2 });
+          console.log("Nuevo chat creado:", chat);
+        };
         console.log("chat.user2Id -----------< ",chat.user2Id)
         console.log("chat.user1Id -----------< ",chat.user1Id)
         console.log("emisorIdd -----------< ",emisorId)
-        const receptorId = 
-                chat.user1Id === emisorId ? chat.user2Id : chat.user1Id;
+        const receptorId = user2Id ;
 
-         const nuevoMensaje=await Mensaje.create({emisorId,ChatId,contenido}) 
+         const nuevoMensaje=await Mensaje.create({emisorId,ChatId:chat.id,contenido}) 
          // 🔹 Enviar al emisor, solo se emite al socket que envió el mensaje
-         socket.emit('mensajeReceptor', nuevoMensaje);
+         socket.emit('mensajeReceptor', {nuevoMensaje,chat});
          // 🔹 Enviar al receptor (si está conectado)SOLO se emite al socket del receptor 
         const socketReceptor = usuariosConectados.get(receptorId);
         if (socketReceptor) {
           console.log("por emitir mensajeReceptor toooo")
-                socket.to(socketReceptor).emit('mensajeReceptor', nuevoMensaje);
+                socket.to(socketReceptor).emit('mensajeReceptor', {nuevoMensaje,chat});
             }
         }catch(err){
              console.log(err)

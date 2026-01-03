@@ -1,3 +1,68 @@
-.contenedor{
-margin-top: auto;
+
+
+.chat-container {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  background: #e5ddd5;
+  padding: 10px;
+}
+
+.chat-messages {
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+/* Contenedor base */
+.mensaje {
+  display: flex;
+  width: 100%;
+}
+
+/* Propios → derecha */
+.mensaje-propio {
+  justify-content: flex-end;
+}
+
+.mensaje-propio .burbuja {
+  background: #dcf8c6;
+  border-top-right-radius: 0;
+}
+
+/* Ajenos → izquierda */
+.mensaje-ajeno {
+  justify-content: flex-start;
+}
+
+.mensaje-ajeno .burbuja {
+  background: #ffffff;
+  border-top-left-radius: 0;
+}
+
+/* Burbuja */
+.burbuja {
+  max-width: 70%;
+  padding: 8px 10px;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 1px 1px rgba(0,0,0,0.15);
+}
+
+/* Texto */
+.texto {
+  font-size: 14px;
+  color: #303030;
+  word-wrap: break-word;
+}
+
+/* Hora */
+.hora {
+  font-size: 11px;
+  color: #999;
+  align-self: flex-end;
+  margin-top: 4px;
 }

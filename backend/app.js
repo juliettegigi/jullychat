@@ -22,15 +22,26 @@ var app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
+//Esto habilita popups de Google sin romper seguridad.
+app.use((req, res, next) => {
+  res.setHeader('Cross-Origin-Opener-Policy', 'same-origin-allow-popups');
+  res.setHeader('Cross-Origin-Embedder-Policy', 'unsafe-none');
+  next();
+});
+
+//sirviendo Angular estático
 app.use(express.static(angularPath));
-app.use(cors({
-  origin: 'http://localhost:4200',
-  methods: ['GET','POST','PUT','DELETE'],
-  allowedHeaders: ['Content-Type', 'Authorization']
-}));
+
+
+/* 🚫 NO CORS en producción */
+if (process.env.NODE_ENV !== 'production') {
+  app.use(cors({
+    origin: 'http://localhost:4200'
+  }));
+}
 app.use(fileUpload({
     useTempFiles : true,
-    tempFileDir : '/tmp/'
+    tempFileDir: path.join(__dirname, 'tmp')
 }));
 
 
@@ -41,7 +52,6 @@ app.use('/api/contactos', contactosRouter);
 app.use('/api/chats', chatsRouter);
 app.use('/api/uploads', uploadsRouter);
 app.use('/api/uploadsCloudinary', uploadsCloudinaryRouter);
-
 
 app.get('*', (req, res) => {
   res.sendFile(path.join(angularPath, 'index.html'));

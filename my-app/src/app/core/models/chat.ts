@@ -24,9 +24,9 @@ export interface Chat {
   export interface ObjetoRtaGetAllChats {
    chatId: number;
    otroUsuario:User;
-   ultimoMensaje: string | null;
+   ultimoMensaje: Mensaje | null;
    isRead:boolean;
-   fecha:string | null; 
+   createdAt:Date | null; 
   }
   export interface RtaGetAllChats {
     msg:string,

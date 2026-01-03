@@ -3,6 +3,7 @@ import { Chat,RtaPost } from '../../../core/models/chat';
 import { SocketService } from '../../../core/services/socket.service';
 import { ChatApiService } from '../../../core/services/api-chat.service';
 import { Mensaje } from '../../../core/models/mensaje';
+import { AuthService } from '../../../core/services/auth.service';
 @Component({
   selector: 'app-menu-inferior',
   imports: [],
@@ -11,36 +12,18 @@ import { Mensaje } from '../../../core/models/mensaje';
 })
 export class MenuInferiorComponent {
  @Input() idDelChat!: number;
-  @Input() user2Id: number | undefined = undefined;
+  @Input() user2Id: number | undefined = undefined;// es el usuario receptor
 
   private chatApi=inject(ChatApiService)
   private socketService = inject(SocketService);
+  private authService = inject(AuthService);
+
   textoDelMensaje: string="";
 
   enviarMensaje(editor: HTMLElement) {
          console.log('click en enviar');
          console.log("id del chat -->",this.idDelChat)
-         // si no existe el chat, primero lo creo
-         if (!this.idDelChat) {
-           this.chatApi.postChat(this.user2Id ?? 0).subscribe({
-             next: (rta: RtaPost) => {
-               console.log("CHAT CREADO:", rta);
-       
-               // ahora sí ya tengo idDelChat
-               this.idDelChat = rta.chat.id;
-       
-               // emitir mensaje recién ahora
-               this.enviarMensajeSocket();
-       
-               // limpiar
-               editor.innerText = "";
-               this.textoDelMensaje = "";
-             },
-             error: (err) => console.error("ERROR POST:", err)
-           });
-       
-           return; // 🛑 importante para no seguir abajo
-         }
+         
        
          // ya existe el chat
          this.enviarMensajeSocket();
@@ -58,12 +41,13 @@ export class MenuInferiorComponent {
 
 
 
-
 private enviarMensajeSocket() {
-  console.log("Id del chat en menu inferior: ",this.idDelChat)
+  console.log("En enviar mensaje socket . Id del chat en menu inferior: ",this.idDelChat)
   this.socketService.emit("mensajeEmisor", 
     {ChatId: this.idDelChat,
-    contenido: this.textoDelMensaje},
+    contenido: this.textoDelMensaje,
+    user2Id: this.user2Id,
+   },
 );
 }
 
