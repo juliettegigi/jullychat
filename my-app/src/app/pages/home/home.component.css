@@ -1,10 +1,33 @@
-.contenedor{
-    display:flex;
-    flex-direction: column;
-    height: 100vh;
-    width: 100vw;
+:host {
+  display: block;
+  height: 100vh;
 }
 
-.chat{
-    background-color:#F5F1EB;
+.home-layout {
+  display: flex;
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
+}
+
+/* menú izquierdo */
+.menu {
+  width: 60px;
+  flex-shrink: 0;
+}
+
+/* lista de chats */
+.sidebar {
+  width: 320px;
+  flex-shrink: 0;
+  border-right: 1px solid #ddd;
+}
+
+/* chat principal */
+.chat {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  background-color: #f5f1eb;
+  min-width: 0; /* 🔥 IMPORTANTÍSIMO */
 }

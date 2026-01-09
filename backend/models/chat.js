@@ -11,7 +11,8 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   Chat.init({
-    
+    user1ClavaVisto: DataTypes.BOOLEAN,
+    user2ClavaVisto: DataTypes.BOOLEAN,
   }, {
     sequelize,
     modelName: 'Chat',

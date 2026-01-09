@@ -1,5 +1,6 @@
 const { Op } = require('sequelize');
 const { Mensaje ,User,Chat} = require('../models');
+const { patch } = require('../app');
 
 
 const getChatsByMsgContacto = async (req, res) => {
@@ -211,10 +212,9 @@ const getAllChats = async (req, res) => {
         const ultimoMensaje = chat.Mensajes[0];
 
         return {
-          chatId: chat.id,
+          chat: chat,
           otroUsuario:chat.user1Id === userLog ? chat.usuario2 : chat.usuario1,
           ultimoMensaje: ultimoMensaje ? ultimoMensaje.contenido : null,
-          isRead:ultimoMensaje ? ultimoMensaje.isRead : null,
           fecha: ultimoMensaje ? ultimoMensaje.createdAt : null
         };
       })
@@ -233,6 +233,33 @@ const getAllChats = async (req, res) => {
 };
 
 
+patchClavaVisto=async(req,res)=>{
+  try {
+    console.log("PATCH CLAVA VISTO EN CHAT")
+    const {ChatId,userId}=req.params; // userId es el id del usuario que clava el visto
+   console.log("chatId  --> ",ChatId)
+    const chat = await Chat.findByPk(ChatId);
+    if(!chat){
+      return res.status(400).json({ msg: "El chatId no corresponde a un chat existente" });
+    }
+
+    const userNum = (userId) == chat.user1Id ? 1 : 2;
+
+
+    if(userNum==1){
+      await chat.update({user1ClavaVisto:true});
+    }else if(userNum==2){
+      await chat.update({user2ClavaVisto:true});
+    }else{
+      return res.status(400).json({ msg: "userNum debe ser 1 o 2" });
+    }
+    res.status(201).json({msg:"PATCH. Clava visto actualizado correctamente\n",chat,userNum})
+        
+  } catch (error) {     
+      console.log("ERROR en patchClavaVisto: ",error)
+      res.status(400).json({error})
+  }
+}
 
 
 module.exports={
@@ -240,6 +267,6 @@ module.exports={
     getAllChats,
     getChatsByMsgContacto,
     getChatCon, // retorna a un chat entre dos usuarios, el logueado y otro, con sus mensajes
-   
+    patchClavaVisto,
     postChat,
   }

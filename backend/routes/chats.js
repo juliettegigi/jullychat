@@ -13,6 +13,7 @@ router.get('/chats',[ validarJWT],
     getAllChats);
 router.post('/',[ validarJWT], 
     postChat);
-
+router.patch('/clavaVisto/:ChatId/:userId',[ validarJWT],
+    patchClavaVisto);
 
 module.exports = router;

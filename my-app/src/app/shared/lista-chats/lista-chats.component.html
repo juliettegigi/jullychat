@@ -2,16 +2,19 @@
 <div>
   <ul>
      @for (chat of chats; track $index) {
-      <li (click)="clickLi?.(chat)" [ngClass]="{'chat-no-leido': !chat.isRead,
-                                                            'chat-leido': chat.isRead
-  }">
-        <div class="row">  
+      <li (click)="clickLi?.(chat, $index)" [ngClass]="{'chat-no-leido': usuarioLogueado.id=== chat.chat.user1Id && !chat.chat.user1ClavaVisto
+                                                                || usuarioLogueado.id=== chat.chat.user2Id && !chat.chat.user2ClavaVisto,
+                                                'chat-leido': usuarioLogueado.id=== chat.chat.user1Id && chat.chat.user1ClavaVisto
+                                                                || usuarioLogueado.id=== chat.chat.user2Id && chat.chat.user2ClavaVisto,
+                                                'chat-seleccionado': chat.chat.id===idDelChat
+                                         }">
+        <div class="row div">  
             <div class="col">
                 <div>
-                   <img  draggable="false" [src]="chat.otroUsuario.avatar ? chat.otroUsuario.avatar : 'img/avatarDefault.jpg'" />
+                   <img  draggable="false" [src]="chat.otroUsuario?.avatar ? chat.otroUsuario?.avatar : 'img/avatarDefault.jpg'" />
                </div>
                <div>
-                   <span>{{ chat.otroUsuario.userName }}</span>
+                   <span>{{ chat.otroUsuario?.userName }}</span>
                </div> 
                <div>
                    <span>{{ chat.ultimoMensaje?.contenido}}</span>
@@ -20,7 +23,9 @@
                    <span>{{ chat.createdAt | date:'dd/MM/yyyy HH:mm' }}</span>
                </div>
             </div>
-            @if(chat.isRead===false){     
+            <!-- círculo rojo de mensaje no leído -->
+            @if(chat.chat.user1ClavaVisto===false && usuarioLogueado.id===chat.chat.user1Id
+               || chat.chat.user2ClavaVisto===false && usuarioLogueado.id===chat.chat.user2Id) {     
                 <div class="col d-flex align-items-center justify-content-end position-relative">
                   <span class="p-2 bg-success border border-light rounded-circle">
                     <span class="visually-hidden">New alerts</span>

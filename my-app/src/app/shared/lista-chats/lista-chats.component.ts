@@ -1,6 +1,8 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input ,inject} from '@angular/core';
 import { Chat,ObjetoRtaGetAllChats  } from '../../core/models/chat';
 import { DatePipe , NgClass} from '@angular/common';
+import { AuthService } from '../../core/services/auth.service';
+
 @Component({
   selector: 'app-lista-chats',
   imports: [DatePipe,NgClass],
@@ -11,5 +13,9 @@ export class ListaChatsComponent {
 //recibo los chats
   @Input() chats : ObjetoRtaGetAllChats[] = [];
   // recibo la funcion cuando le hacen click a un li
-  @Input() clickLi ?:(chat:ObjetoRtaGetAllChats)=>void;
+  @Input() clickLi ?:(chat:ObjetoRtaGetAllChats,index:number)=>void;
+  @Input() idDelChat:number=0;
+  private AuthService = inject(AuthService);
+
+  usuarioLogueado = this.AuthService.user;
 }

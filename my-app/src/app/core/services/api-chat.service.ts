@@ -1,7 +1,7 @@
 import { Injectable,inject, PLATFORM_ID } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { Chat, RtaGetMsgCon,RtaPost,RtaGetAllChats } from '../models/chat';
+import { Chat, RtaGetMsgCon,RtaPost,RtaGetAllChats, RtaPatchClavaVisto } from '../models/chat';
 import { getApiUrl } from '../config/api.config';
 
 @Injectable({
@@ -31,13 +31,10 @@ getAllChats(): Observable<RtaGetAllChats> {
   return this.http.get<RtaGetAllChats>(`${this.apiUrl}chats`);
 }
 
-patchIsRead(chatId: number): Observable<{ msg: string }> {
-  return this.http.patch<{ msg: string }>(
-    `${this.apiUrl}isRead`,
-    {}, // PATCH sin body
-    {
-      params: { chatId: chatId.toString() }
-    }
+patchClavaVisto(chatId: number,userId:number): Observable<RtaPatchClavaVisto> {
+  return this.http.patch<RtaPatchClavaVisto>(
+    `${this.apiUrl}clavaVisto/${chatId}/${userId}`,
+    null // no mandás body
   );
 }
 

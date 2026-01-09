@@ -5,6 +5,10 @@ export interface Chat {
     id:number,
     user1Id: number;
     user2Id: number;
+    user1ClavaVisto: boolean;
+    user2ClavaVisto: boolean;
+    createdAt: Date;
+    updatedAt: Date;
   }
 
   
@@ -12,26 +16,30 @@ export interface Chat {
   export interface RtaGetMsgCon {
     msg:string,
     chat: Chat;
-    mensajes: Mensaje[];
+    mensajes: Mensaje[]
   }
   
   export interface RtaPost {
     msg:string,
-    chat: Chat;
+    chat: Chat
   }
   
   
   export interface ObjetoRtaGetAllChats {
-   chatId: number;
-   otroUsuario:User;
+   chat: Chat;
+   otroUsuario:User | null;
    ultimoMensaje: Mensaje | null;
-   isRead:boolean;
-   createdAt:Date | null; 
+   createdAt:Date | null
   }
   export interface RtaGetAllChats {
     msg:string,
-    chats: ObjetoRtaGetAllChats[];
+    chats: ObjetoRtaGetAllChats[]
   }
 
 
+  export interface RtaPatchClavaVisto {
+    msg:string;
+    chat: Chat;
+    userNum:number;
+  }
 

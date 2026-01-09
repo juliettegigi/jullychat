@@ -1,7 +1,7 @@
 <div class="chat-container">
 
-  @if (mensajes.length) {
-    <div class="chat-messages">
+
+    <div class="chat-messages" #scrollContainer>
 
       @for (mensaje of mensajes; track $index) {
 
@@ -25,6 +25,6 @@
       }
 
     </div>
-  }
+  
 
 </div>

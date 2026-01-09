@@ -1,6 +1,8 @@
 @if(resultados.length){
                       <div>
-                          <h3>Resultados:</h3>
+                          @if(listTitle){
+                            <h6>{{ listTitle }}</h6>
+                          }
                           <ul>
                              @for (user of resultados; track $index) {
                                        <li (click)="clickLi?.(user)">{{ user.userName }} ({{ user.email }})

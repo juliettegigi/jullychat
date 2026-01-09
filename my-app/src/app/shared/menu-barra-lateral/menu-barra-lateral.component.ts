@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Output } from '@angular/core';
+import { Component, EventEmitter, Output,Input } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 
 @Component({
@@ -9,13 +9,17 @@ import { MatButtonModule } from '@angular/material/button';
   styleUrl: './menu-barra-lateral.component.css'
 })
 export class MenuBarraLateralComponent {
-   @Output() agregarPersonaClick = new EventEmitter<void>();
-   @Output() clickNuevoMsg = new EventEmitter<void>();
-
-   agregarPersona() {
-     this.agregarPersonaClick.emit();
+  // @Output() agregarPersonaClick = new EventEmitter<void>();
+  // @Output() clickNuevoMsg = new EventEmitter<void>();
+   @Input() currentBtnMenu:string="default"
+   @Input() clickNuevoMsg!: ()=>void;
+   @Input() clickAddContact!: ()=>void;
+   addContact() {
+    // this.agregarPersonaClick.emit();
+     this.clickAddContact();
   }
   nuevoChat() {
-     this.clickNuevoMsg.emit();
+    // this.clickNuevoMsg.emit();
+     this.clickNuevoMsg();
   }
 }

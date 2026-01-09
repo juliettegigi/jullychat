@@ -21,8 +21,6 @@ export class MenuInferiorComponent {
   textoDelMensaje: string="";
 
   enviarMensaje(editor: HTMLElement) {
-         console.log('click en enviar');
-         console.log("id del chat -->",this.idDelChat)
          
        
          // ya existe el chat
@@ -42,7 +40,6 @@ export class MenuInferiorComponent {
 
 
 private enviarMensajeSocket() {
-  console.log("En enviar mensaje socket . Id del chat en menu inferior: ",this.idDelChat)
   this.socketService.emit("mensajeEmisor", 
     {ChatId: this.idDelChat,
     contenido: this.textoDelMensaje,

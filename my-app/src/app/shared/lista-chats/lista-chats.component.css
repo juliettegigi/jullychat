@@ -12,3 +12,24 @@ img{
 .chat-leido{
     background-color: white;
 }
+
+.chat-seleccionado {
+  border-left: 4px solid #0d6efd;
+  background-color: #f5faff;
+}
+
+li {
+  border: 2px solid transparent;
+  cursor: pointer;
+}
+
+
+ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.div{
+    padding: 0.5rem;
+}

@@ -1,8 +1,9 @@
 import { Injectable,inject, PLATFORM_ID } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { rtaLogin, User } from '../models/user';
+import { GetUserByIdResponse, rtaLogin, User } from '../models/user';
 import { getApiUrl } from '../config/api.config';
+import { HttpHeaders } from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root'
@@ -36,15 +37,26 @@ export class UserApiService {
   }
 
   // Obtener un usuario por ID
-  getById(id: number): Observable<User> {
-    return this.http.get<User>(`${this.apiUrlUsuario}${id}`);
-  }
-  // Obtener un usuario por userName e email
-  getByUserNameAndEmail(termino: string): Observable<User[]> {
-     const encoded = encodeURIComponent(termino);
-  return this.http.get<User[]>(`${this.apiUrlUsuario}${encoded}`);
-    //return this.http.get<User[]>(`${this.apiUrlUsuario}${termino}`);
-  }
+ getById(id: number): Observable<GetUserByIdResponse> {
+  const token = localStorage.getItem('token');
+
+  const headers = new HttpHeaders({
+    Authorization: `Bearer ${token}`
+  });
+
+  return this.http.get<GetUserByIdResponse>(
+    `${this.apiUrlUsuario}${id}`,
+    { headers }
+  );
+}
+
+
+getByUserNameAndEmail(termino: string): Observable<any> {
+  const encoded = encodeURIComponent(termino);
+  return this.http.get<any>(
+    `${this.apiUrlUsuario}buscar/${encoded}`
+  );
+}
 
   // Crear un nuevo usuario
   create(user: Partial<User>): Observable<User> {

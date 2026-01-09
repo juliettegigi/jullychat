@@ -42,7 +42,6 @@ export class FormNuevoContactoComponent {
     this.userApi.getByUserNameAndEmail(termino).subscribe({
       next: (rta:any ) => {
         this.resultados = rta.usuarios;
-        console.log('Usuarios encontrados:', this.resultados);
         this.buscando = false;
       },
       error: (err) => {
@@ -55,10 +54,6 @@ export class FormNuevoContactoComponent {
   agregarContacto(user: User) {
     const alias = this.formContacto.get('alias')?.value || null;
 
-    console.log('Agregar contacto:', {
-      contactoId: user.id,
-      alias
-    });
 
     // Llamada a tu API para guardar el contacto
   }

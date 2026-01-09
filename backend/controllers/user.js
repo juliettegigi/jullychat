@@ -1,7 +1,7 @@
 const {request,response}=require('express');
 const { Op ,Sequelize} = require('sequelize');
 const bcryptjs=require('bcryptjs');
-const { User ,sequelize} = require('../models');
+const { User,Contacto ,sequelize} = require('../models');
 
 
 const userPost=async(req=request,res=response)=>{
@@ -30,9 +30,14 @@ const getUsersPorUserNameAndEmail=async(req,res)=>{
 
         const{limit,offset}=req.query;
         const{termino}=req.params; // puede ser userName o email
-        console.log('termino: ',termino)
-        console.log("GET Users")
-
+        const userIdLogueado = req.user.id;
+        // busco los contactos actuales del user logueado para excluirlos de la busqueda
+        const contactos = await Contacto.findAll({
+          where: { UserId: userIdLogueado },
+          attributes: ['ContactoId'],
+          raw: true
+        });
+        const contactosIds = contactos.map(c => c.ContactoId);
 
         const exactMatchFirst = Sequelize.literal(`
               CASE
@@ -58,10 +63,14 @@ const getUsersPorUserNameAndEmail=async(req,res)=>{
            ELSE 1
          END
        `);
+
+       
           
        const usuarios = await User.findAll({
           where: {
-            [Op.or]: [
+          //  id: { [Op.ne]: userIdLogueado },// que no incluya al usuario logueado y alos que ya son contactos
+          id: { [Op.notIn]: contactosIds },  
+          [Op.or]: [
               { userName: { [Op.like]: `%${termino}%` } },
               { email: { [Op.like]: `%${termino}%` } },
               Sequelize.where(
@@ -85,10 +94,6 @@ const getUsersPorUserNameAndEmail=async(req,res)=>{
           offset:offset ? parseInt(offset) : undefined,
         });
 
-console.log("---------------------- usuarios ----------------------")
-console.log(usuarios)
-console.log("-------------------------------------------------------")
-
         res.status(201).json({msg:"GET. usuario obtenidos correctamente\n",usuarios})
             
     } catch (error) {
@@ -100,7 +105,18 @@ console.log("-------------------------------------------------------")
 
 
 
-
+const getUserById=async(req,res)=>{
+    try {
+        const {id}=req.params;
+        const user=await User.findByPk(id,{
+            attributes:{exclude:['pass']}
+        }); 
+        res.status(201).json({msg:"GET. Usuario obtenido correctamente\n",user})
+    } catch (error) {
+        console.log("ERROR en getUserById: ",error)
+        res.status(400).json({error})
+    } 
+}
 
 
 
@@ -109,4 +125,5 @@ module.exports={
     //userGet,userPatch,userDelete,userPut,
     userPost,
     getUsersPorUserNameAndEmail,
+    getUserById
 }

@@ -32,12 +32,14 @@ CREATE TABLE chats (
   id INT AUTO_INCREMENT primary key,
   user1Id INT NOT NULL,
   user2Id INT NOT NULL,
+  user1ClavaVisto tinyint default 0,
+  user2ClavaVisto tinyint default 0,
   createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   UNIQUE (user1Id, user2Id),
   FOREIGN KEY (user1Id) REFERENCES users(id),
   FOREIGN KEY (user2Id) REFERENCES users(id),
-  CONSTRAINT chk_order CHECK (user1Id < user2Id)-- no se puede agregar a la tabla un user1Id mayor a user2Id  
+  CONSTRAINT chk_order CHECK (user1Id <= user2Id)-- no se puede agregar a la tabla un user1Id mayor a user2Id  
 );
 
 CREATE TABLE Mensajes (
@@ -45,7 +47,6 @@ CREATE TABLE Mensajes (
   chatId INT NOT NULL,
   emisorId int not null,
   contenido TEXT NOT NULL,
-  isRead tinyint default false,
   createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   FOREIGN KEY (emisorId) REFERENCES users(id),

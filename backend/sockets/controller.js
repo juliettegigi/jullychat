@@ -5,7 +5,7 @@ const {User, Contacto, sequelize, Mensaje, Chat} = require('../models');
 
 const usuariosConectados = new Map();  // 🔴 mapa global usuarioId → socketId
 
-const socketController=(socket) => {
+const socketController=async (socket) => {
   console.log('🔌 Usuario conectado:', socket.id);
 
 
@@ -20,18 +20,22 @@ const socketController=(socket) => {
         }
 
         const { userId } = jwt.verify(token, process.env.SECRETORPRIVATEKEY);
-
-        // Guardar el userId dentro del socket
-        socket.userId = userId;
+        const user= await User.findByPk(userId, {attributes: { exclude: ['pass'] }});
+        if(!user){
+            console.log("❌ Usuario no existe - socket");
+            return socket.disconnect();
+        }
+        // Guardar el user dentro del socket
+        socket.user = user;
 
         // Registrar usuario como conectado
-        usuariosConectados.set(userId, socket.id);
+        usuariosConectados.set(user.id, socket.id);
 
-        console.log("✔ Usuario conectado (auth):", userId);
+        console.log("✔ Usuario conectado (auth):", user.id);
 
         socket.on("disconnect", () => {
-            usuariosConectados.delete(userId);
-            console.log("❌ Usuario desconectado:", userId);
+            usuariosConectados.delete(user.id);
+            console.log("❌ Usuario desconectado:", user.id);
         });
 
     } catch (error) {
@@ -166,7 +170,7 @@ const socketController=(socket) => {
         
           try{
 
-        const emisorId = socket.userId;
+        const emisorId = socket.user.id;
         // Buscar chat para saber quién es el receptor
         let chat = await Chat.findByPk(ChatId);
         console.log("CHAT ID -----------< ",ChatId )
@@ -181,15 +185,18 @@ const socketController=(socket) => {
         console.log("chat.user1Id -----------< ",chat.user1Id)
         console.log("emisorIdd -----------< ",emisorId)
         const receptorId = user2Id ;
+        chat.user1ClavaVisto = (emisorId === chat.user1Id) ? true : false;
+        chat.user2ClavaVisto = (emisorId === chat.user2Id) ? true : false;
+        await chat.save();
 
          const nuevoMensaje=await Mensaje.create({emisorId,ChatId:chat.id,contenido}) 
          // 🔹 Enviar al emisor, solo se emite al socket que envió el mensaje
-         socket.emit('mensajeReceptor', {nuevoMensaje,chat});
+         socket.emit('mensajeReceptor', {nuevoMensaje,chat,emisor:socket.user});
          // 🔹 Enviar al receptor (si está conectado)SOLO se emite al socket del receptor 
         const socketReceptor = usuariosConectados.get(receptorId);
         if (socketReceptor) {
           console.log("por emitir mensajeReceptor toooo")
-                socket.to(socketReceptor).emit('mensajeReceptor', {nuevoMensaje,chat});
+                socket.to(socketReceptor).emit('mensajeReceptor', {nuevoMensaje,chat,emisor:socket.user});
             }
         }catch(err){
              console.log(err)

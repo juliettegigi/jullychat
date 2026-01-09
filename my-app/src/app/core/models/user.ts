@@ -16,3 +16,9 @@ export interface rtaLogin { // no importa q el backend mande mas datos, solo me 
     count:number;
     rows: User[];
   }
+
+
+  export interface GetUserByIdResponse {
+  msg: string;
+  user: User;
+}

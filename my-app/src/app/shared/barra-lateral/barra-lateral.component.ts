@@ -22,12 +22,17 @@ import { Mensaje } from '../../core/models/mensaje';
   styleUrl: './barra-lateral.component.css'
 })
 export class BarraLateralComponent {
- @Output() usuarioSeleccionado = new EventEmitter<ObjetoRtaGetAllChats>();
- @Output() usuarioSeleccionadParaNuevoChat = new EventEmitter<User>();
+ @Input() usuarioSeleccionado!: (chat: ObjetoRtaGetAllChats,index:number) => void;
+ @Input() usuarioSeleccionadoParaNuevoChat!: (user: User) => void;
  @Input() chats: ObjetoRtaGetAllChats[] = [];
-
+ @Input() currentBtnMenu:string="default"
+ @Input() clickNuevoMsg!: ()=>void;
+ @Input() clickAddContact!: ()=>void;
+ @Input() agregarPersonaClick!: ()=>void;
+ @Input() resultadosNewChat: User[] = [];
+ @Input() idDelChat:number=0;
+ 
   vista='inicio'
-  currentBtnMenu="default"
   private contactoApi=inject(ContactoApiService)
   private chatApi=inject(ChatApiService)
   private userApi = inject(UserApiService);
@@ -39,21 +44,21 @@ export class BarraLateralComponent {
     mensajesConUsuario:Mensaje[]=[]
  
 
+    onClickInicio=()=>{
+      this.currentBtnMenu="default";
+    }
 
    // para enviarle a la lista-usuarios
   clickUsuario=(usuario:User)=>{
-           console.log('Usuario clickeado:', usuario);
            // api para agregarContacto
             this.contactoApi.postContacto(usuario.id).subscribe({
               next:(rta:RtaPost)=>{
-                  console.log(rta.msg);
                 },
                 error: (err) => {
                   console.error(err);
               
                 },
                 complete: () => {
-                  console.log("Petición terminada");
                 }
             })
     }  
@@ -63,55 +68,30 @@ export class BarraLateralComponent {
  
 
     onUsuariosEncontrados(rta: RtaUsuariosEncontrados) {
-      console.log("quweeeeeeeeeeeeeeeee")
-      console.log(rta)
-      this.usuariosEncontrados = rta.rows;
-      console.log('Usuarios encontrados en BarraLateralComponent:', this.usuariosEncontrados);
-    }
+       this.usuariosEncontrados = rta.rows;
+       }
 
    // para enviarle a la input-Search
     buscarChat=(termino:string)=>{
-       console.log("me ejecutooo")
       this.chatApi.getChatsByMsgContacto(termino).subscribe({
            next:(chats:Chat[])=>{
              
-             console.log('contactos recibidos en BarraLateralComponent:', chats);
            },
            error: (err) => {
              console.error(err);
          
            },
            complete: () => {
-             console.log("Petición terminada");
            }
        })
     }
 
-    // para enviarle a la menu-barra-lateral
-    onClickNuevoMensaje=()=>{
-        this.currentBtnMenu="nuevoMsg"
-        this.contactoApi.getMisContactos().subscribe({
-                   next: (rta: User[]) => {
-                   
-                     console.log('Resultados:', rta);
-                     this.resultados=rta;
-                   },
-                   error: (err) => {
-                     console.error('Error al buscar usuario:', err);
-                     this.resultados = [];
-                   }
-                 });
-    }
+  
+    
 
     
 
-    onClickInicio=()=>{
-      console.log("q carajuss")
-      this.vista="inicio"
-    }
-
     onClickNuevoContacto=()=>{
-      console.log("q carajuss")
       this.currentBtnMenu="nuevoContacto"
     }
 
@@ -122,23 +102,20 @@ export class BarraLateralComponent {
     
     
     
-    // le envío al inputSearch la función para buscar usuarios
-    resultados: any[] = [];
+   
     buscarUsuario = (termino: string) => {
-                 console.log('Buscando:', termino);
                  if (!termino) {
-                   this.resultados = [];
+                   this.resultadosNewChat = [];
                    return;
                  }
              
                  this.userApi.getByUserNameAndEmail(termino).subscribe({
                    next: (data: any) => {
-                     this.resultados = data.usuarios || data;
-                     console.log('Resultados:', this.resultados);
+                     this.resultadosNewChat = data.usuarios || data;
                    },
                    error: (err) => {
                      console.error('Error al buscar usuario:', err);
-                     this.resultados = [];
+                     this.resultadosNewChat = [];
                    }
                  });
       };
@@ -146,33 +123,36 @@ export class BarraLateralComponent {
 
       // le envío a la lista usuario la función para agregar contacto
      agregarContacto=(user: User)=> {
-        console.log('Agregar usuario:', user);
-        // acá después llamás otra API si querés
+        // llamo a la API , que agrega al contacto a la DB
         this.contactoApi.postContacto(user.id).subscribe({
           next: (rta: RtaPost) => {
-            console.log(rta.msg);
+            this.currentBtnMenu="defaulty";
+            this.usuarioSeleccionadoParaNuevoChat(user);
+            // actualizo al usr seleccionado
+          //  this.usuarioSeleccionadParaNuevoChat.emit(user);
+            
+          
+
           },
           error: (err) => {
             console.error(err);
           },
           complete: () => {
-            console.log("Petición terminada");
           }
         });
       }
 
  // le envío a la lista usuario la función para cuando hagan click en un li
       clickLiNuevoMsg=(user:User)=>{
-        console.log('Usuario clickeado para nuevo mensaje:');
         // le emito al componente padre para que cargue al componente ChatComponent con el chat entre ambos, los mensajes" y que cargue al componente "BarraLateral" con la lista de contactos con las que tuve un chat
-        this.usuarioSeleccionadParaNuevoChat.emit(user);
+       this.usuarioSeleccionadoParaNuevoChat(user);
 
       }
 
-      onClickChatConUsuario=(chat: ObjetoRtaGetAllChats)=>{
-        console.log('chatClickeado:', chat.otroUsuario);
+      onClickChatConUsuario=(chat: ObjetoRtaGetAllChats,index:number)=>{
         // le emito al componente padre para que cargue al componente ChatComponent con el chat entre ambos, los mensajes" y que cargue al componente "BarraLateral" con la lista de contactos con las que tuve un chat
-        this.usuarioSeleccionado.emit(chat);
+       this.currentBtnMenu="default"
+       this.usuarioSeleccionado(chat,index);
 
       }
 }

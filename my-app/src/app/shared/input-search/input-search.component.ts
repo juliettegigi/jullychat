@@ -22,7 +22,6 @@ import { SocketService } from '../../core/services/socket.service';
 export class InputSearchComponent {
  private socketService = inject(SocketService);
  terminoBusqueda = '';
- @Output() resultados = new EventEmitter<any>();
  @Input() funcion?: (termino: string) => void;
   
  
