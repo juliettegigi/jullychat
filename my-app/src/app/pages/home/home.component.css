@@ -1,11 +1,12 @@
 :host {
   display: block;
-  height: 100vh;
+  height:100%;
 }
 
+/* ===== Layout base ===== */
 .home-layout {
   display: flex;
-  height: 100vh;
+  height: 100%;
   width: 100vw;
   overflow: hidden;
 }
@@ -16,11 +17,12 @@
   flex-shrink: 0;
 }
 
-/* lista de chats */
+/* sidebar (lista de chats) */
 .sidebar {
   width: 320px;
   flex-shrink: 0;
   border-right: 1px solid #ddd;
+  background: #fff;
 }
 
 /* chat principal */
@@ -29,5 +31,60 @@
   display: flex;
   flex-direction: column;
   background-color: #f5f1eb;
-  min-width: 0; /* 🔥 IMPORTANTÍSIMO */
+  min-width: 0; /* 🔥 clave para flex */
+}
+
+/* ========================= */
+/* 📱 MOBILE */
+/* ========================= */
+@media (max-width: 768px) {
+
+  .menu {
+    width: 50px;
+  }
+
+  /* por defecto: mostrar sidebar, ocultar chat */
+  .sidebar {
+    width: calc(100vw - 50px);
+  }
+
+  .chat {
+    display: none;
+  }
+
+  /* cuando hay chat seleccionado */
+  .home-layout.chat-open .sidebar {
+    display: none;
+  }
+
+  .home-layout.chat-open .chat {
+    display: flex;
+    width: calc(100vw - 50px);
+  }
+}
+
+/* ========================= */
+/* 📱 EXTRA CHICO */
+/* ========================= */
+@media (max-width: 480px) {
+
+  .menu {
+    width: 45px;
+  }
+
+  .sidebar,
+  .home-layout.chat-open .chat {
+    width: calc(100vw - 45px);
+  }
+}
+
+
+@media (min-width: 769px) {
+  .sidebar {
+    display: block !important;
+  }
+
+  .chat {
+    display: flex !important;
+  }
 }

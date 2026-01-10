@@ -238,6 +238,7 @@ patchClavaVisto=async(req,res)=>{
     console.log("PATCH CLAVA VISTO EN CHAT")
     const {ChatId,userId}=req.params; // userId es el id del usuario que clava el visto
    console.log("chatId  --> ",ChatId)
+   console.log("cuserId  --> ",userId)
     const chat = await Chat.findByPk(ChatId);
     if(!chat){
       return res.status(400).json({ msg: "El chatId no corresponde a un chat existente" });

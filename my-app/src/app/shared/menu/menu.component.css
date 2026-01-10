@@ -8,3 +8,17 @@ img{
     border-radius: 50%;
     object-fit: cover;
 }
+
+
+.flechaBack svg {
+  width: 1.5rem;
+  height: 1.5rem;
+  stroke: currentColor;
+  stroke-width: 1.3;
+}
+
+.flechaBack{
+    margin-left: 0.5rem ;
+    margin-top: 0.5rem ;
+    cursor: pointer;
+}

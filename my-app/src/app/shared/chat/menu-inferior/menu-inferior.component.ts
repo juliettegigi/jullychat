@@ -3,6 +3,7 @@ import { Chat,RtaPost } from '../../../core/models/chat';
 import { SocketService } from '../../../core/services/socket.service';
 import { ChatApiService } from '../../../core/services/api-chat.service';
 import { Mensaje } from '../../../core/models/mensaje';
+import { User } from '../../../core/models/user';
 import { AuthService } from '../../../core/services/auth.service';
 @Component({
   selector: 'app-menu-inferior',
@@ -12,7 +13,7 @@ import { AuthService } from '../../../core/services/auth.service';
 })
 export class MenuInferiorComponent {
  @Input() idDelChat!: number;
-  @Input() user2Id: number | undefined = undefined;// es el usuario receptor
+  @Input() user2: User | null=null;// es el usuario receptor
 
   private chatApi=inject(ChatApiService)
   private socketService = inject(SocketService);
@@ -43,7 +44,7 @@ private enviarMensajeSocket() {
   this.socketService.emit("mensajeEmisor", 
     {ChatId: this.idDelChat,
     contenido: this.textoDelMensaje,
-    user2Id: this.user2Id,
+    user2: this.user2,
    },
 );
 }

@@ -165,7 +165,7 @@ const socketController=async (socket) => {
 
 
 
-        socket.on('mensajeEmisor',async({ChatId,contenido,user2Id})=>{ 
+        socket.on('mensajeEmisor',async({ChatId,contenido,user2})=>{ 
           console.log("en el socketvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv -----------< ")
         
           try{
@@ -176,27 +176,27 @@ const socketController=async (socket) => {
         console.log("CHAT ID -----------< ",ChatId )
         if (!chat) { //crear chat
 
-          const u1 = Math.min(emisorId, user2Id);
-          const u2 = Math.max(emisorId, user2Id);
+          const u1 = Math.min(emisorId, user2.id);
+          const u2 = Math.max(emisorId, user2.id);
           chat = await Chat.create({ user1Id: u1, user2Id:u2 });
           console.log("Nuevo chat creado:", chat);
         };
         console.log("chat.user2Id -----------< ",chat.user2Id)
         console.log("chat.user1Id -----------< ",chat.user1Id)
         console.log("emisorIdd -----------< ",emisorId)
-        const receptorId = user2Id ;
+        const receptorId = user2.id ;
         chat.user1ClavaVisto = (emisorId === chat.user1Id) ? true : false;
         chat.user2ClavaVisto = (emisorId === chat.user2Id) ? true : false;
         await chat.save();
 
          const nuevoMensaje=await Mensaje.create({emisorId,ChatId:chat.id,contenido}) 
          // 🔹 Enviar al emisor, solo se emite al socket que envió el mensaje
-         socket.emit('mensajeReceptor', {nuevoMensaje,chat,emisor:socket.user});
+         socket.emit('mensajeReceptor', {nuevoMensaje,chat,emisor:socket.user,receptor:user2});
          // 🔹 Enviar al receptor (si está conectado)SOLO se emite al socket del receptor 
         const socketReceptor = usuariosConectados.get(receptorId);
         if (socketReceptor) {
           console.log("por emitir mensajeReceptor toooo")
-                socket.to(socketReceptor).emit('mensajeReceptor', {nuevoMensaje,chat,emisor:socket.user});
+                socket.to(socketReceptor).emit('mensajeReceptor', {nuevoMensaje,chat,emisor:socket.user,receptor:user2});
             }
         }catch(err){
              console.log(err)

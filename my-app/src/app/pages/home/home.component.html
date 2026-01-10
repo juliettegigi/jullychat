@@ -1,5 +1,9 @@
-<div class="home-layout">
-  <app-menu class="menu"></app-menu>
+<div class="home-layout" [class.chat-open]="usuarioSeleccionado!==null">
+  <app-menu class="menu"
+    [restore]="restore"
+    [isMobile]="isMobile"
+    [contraer]="contraer">
+  </app-menu>
 
   <app-barra-lateral
     class="sidebar"

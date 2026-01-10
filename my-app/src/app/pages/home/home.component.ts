@@ -5,7 +5,7 @@ import { CommonModule } from '@angular/common';
 import { MenuComponent } from '../../shared/menu/menu.component';
 import { BarraLateralComponent } from '../../shared/barra-lateral/barra-lateral.component';
 import { ChatComponent } from '../../shared/chat/chat.component';
-import { User } from '../../core/models/user';
+import { User, RtaUsuariosEncontrados } from '../../core/models/user';
 import { Mensaje } from '../../core/models/mensaje';
 import { Chat, RtaPatchClavaVisto } from '../../core/models/chat';
 import { ObjetoRtaGetAllChats} from '../../core/models/chat';
@@ -15,7 +15,7 @@ import { SocketService } from '../../core/services/socket.service';
 import { ContactoApiService } from '../../core/services/api-contacto.service';
 import { AuthService } from '../../core/services/auth.service';
 import { UserApiService } from '../../core/services/api-user.service';
-
+import { BreakpointObserver, LayoutModule } from '@angular/cdk/layout';
 
 @Component({
   selector: 'app-home',
@@ -33,7 +33,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     emisorId=this.AuthService.user?.id;//el usuario logueado
     currentBtnMenu:string="default"//lo que se muestra enn la barra lateral, por default la lista de chats
     usuarioSeleccionado: User | null = null;
-    usuarioSeleccionadoId: number  = 0;
+    usuarioSeleccionadoId?: number  = 0;
     usuarioSeleccionadoIndex:number=0;
     //reciboMensajeDeId: number = 0;
     mensajes: Mensaje[] = [];//mensajes del chat abierto
@@ -44,11 +44,50 @@ export class HomeComponent implements OnInit, OnDestroy {
     private socketService = inject(SocketService);
     private destroy$ = new Subject<void>();
     private zone = inject(NgZone); // porque las cosas no se actualizan cuando uso sockets
-  
+    contraer=false;
+    usuarioLogueado=this.AuthService.user || null;
+    isMobile = false;
+
+    restore=()=>{
+      this.usuarioSeleccionado=null;
+      this.usuarioSeleccionadoId=0 
+      this.mensajes=[];
+      this.idDelChat=0;
+      this.contraer=false; 
+    }
+    
+      constructor(private breakpointObserver: BreakpointObserver) {
+        this.breakpointObserver
+          .observe('(max-width: 768px)')
+          .subscribe(result => {
+            this.isMobile = result.matches;
+          });
+      }
+
   
 
+      actualizarChats = (chat: ObjetoRtaGetAllChats, isEmisor:boolean) => {
+        //si yo selecciono y soy el emisor del nuevo mensaje
+        if(isEmisor){
+               if(this.idDelChat!==0){
+                   //elimino el chat para ponerlo arriba
+                   this.chats.splice(this.usuarioSeleccionadoIndex, 1);
+                   this.usuarioSeleccionadoIndex=0;
+               }
+          this.chats.unshift(chat);
+        return;  
+        }
 
-  
+        // 🔹 Buscar índice del chat en la lista
+        const index = this.chats.findIndex(c => c.chat.id === chat.chat.id);
+        // 🔹 Si existe, lo quitamos de su posición actual
+        if (index !== -1) {
+          this.chats.splice(index, 1);
+        }
+        // 🔹 Lo insertamos al principio
+        this.chats.unshift(chat);
+
+      };
     ngOnInit() {
 
       
@@ -66,56 +105,67 @@ export class HomeComponent implements OnInit, OnDestroy {
 
    
 
-    this.socketService.listen<{ nuevoMensaje: Mensaje; chat:Chat,emisor:User }>('mensajeReceptor')
-     .pipe(takeUntil(this.destroy$))    
-     .subscribe(({ nuevoMensaje, chat, emisor}) => {
-          // cuando le envío msj a un usuario con el cual no tenía chat creado
-          if(this.idDelChat === 0 ){
-               this.idDelChat=chat.id;
-          }
-          // si el mensaje es del chat que tengo abierto, lo agrego a la lista de mensajes
-          if(this.usuarioSeleccionado && chat.id==this.idDelChat  ){
-                       this.zone.run(() => {
-                                this.mensajes.push(nuevoMensaje);
-                                // si yo tengo abierto el chat, entonces tengo que marcar al nuevo mensaje como visto
-                                if(this.emisorId===chat.user1Id){
-                                         //hacer un update del chat
-                                        this.chatApi.patchClavaVisto(chat.id,chat.user1Id).subscribe({
-                                            next: (resp:RtaPatchClavaVisto) => {
-                                              this.chats[this.usuarioSeleccionadoIndex].chat=resp.chat;
-                                            },
-                                            error: (err) => {
-                                              console.error('❌ Error al clavar visto', err);
-                                            }
-                                          });
-                                }
-                                if(this.emisorId===chat.user2Id)  {
-                                  this.chatApi.patchClavaVisto(chat.id,chat.user2Id).subscribe({
-                                            next: (resp) => {
-                                              this.chats[this.usuarioSeleccionadoIndex].chat=resp.chat;
-                                            },
-                                            error: (err) => {
-                                              console.error('❌ Error al clavar visto', err);
-                                            }
-                                          });
-                                }
-                       });
-                } 
-
-           this.chatApi.getAllChats().subscribe({
-            next: (res) => {
-              
-              this.chats = res.chats;  // ← acá sí es un array
-            },
-            error: (err) => console.error(err)
-      });
-          
-
-         
-        });
 
 
-  }
+
+
+
+this.socketService.listen<{ nuevoMensaje: Mensaje; chat:Chat,emisor:User,receptor:User }>('mensajeReceptor')
+     .pipe(takeUntil(this.destroy$))
+     .subscribe(  ({ nuevoMensaje, chat, emisor,receptor}) => {
+      
+      // usuarioSeleccionado son distintos en ambos navegadores, 
+      // idDelChatTambien, uno puede tener un chat abierto y otro otro
+                
+
+                let otroUsuario=null;
+                //
+                otroUsuario= this.usuarioLogueado.id===emisor.id?receptor:emisor;
+
+             this.actualizarChats({  chat,
+               otroUsuario,
+               ultimoMensaje:nuevoMensaje,
+               createdAt: nuevoMensaje.createdAt},emisor.id===this.usuarioLogueado.id)
+        
+              // cuando alguien envía msj a un usuario con el cual no tenía chat creado, o sea, se creó un nuevo chat
+              if(this.idDelChat === 0 ){
+                       this.idDelChat=chat.id;
+                       // acá insertar al principio de thischats
+                       
+              } 
+                 //  eliminar al chat de this,chats e insertarlo  al principio del this.chats}
+                      // si el mensaje es del chat que tengo abierto, lo agrego a la lista de mensajes
+                      if( chat.id==this.idDelChat ){
+                        this.zone.run(  () => {  this.mensajes.push(nuevoMensaje);
+                                                  // si yo tengo abierto el chat, entonces tengo que marcar al nuevo mensaje como visto
+                                                 // el nuevo mensaje el socket ya lo marca como visto por el q envía el mensaje ==> hay q ver si el receptor tiene el chat abierto para ponerle visto
+                                                 if(this.emisorId!==emisor.id){
+                                                         //hacer un update del chat
+                                                         this.chatApi.patchClavaVisto(chat.id,this.emisorId).subscribe({
+                                                                 next: (resp:RtaPatchClavaVisto) => {
+                                                                               this.chats[this.usuarioSeleccionadoIndex].chat=resp.chat;
+                                                                      },
+                                                                 error: (err) => {
+                                                                             console.error('❌ Error al clavar visto', err);
+                                                                           }
+                                                         });
+                                                   }
+                                              }
+                                      );
+                       }
+                
+                
+
+                
+        } );
+
+
+
+
+  
+
+
+} //ngOnInit
 
   ngOnDestroy(): void {
   this.destroy$.next();
@@ -132,7 +182,8 @@ onUsuarioSeleccionado=(chat:ObjetoRtaGetAllChats,index:number) => {
     this.usuarioSeleccionadoIndex=index;
     this.chatApi.getMsgCon(this.usuarioSeleccionadoId).subscribe({
                next:(rta:RtaGetMsgCon)=>{ //msg:string y chat: Chat y mensajes: Mensaje[]
-                 if(rta.chat){
+                 
+                if(rta.chat){
                   //hacer un update del chat
                    this.chatApi.patchClavaVisto(rta.chat.id, this.AuthService.userId || 0).subscribe({
                        next: (resp:RtaPatchClavaVisto) => {
@@ -145,11 +196,17 @@ onUsuarioSeleccionado=(chat:ObjetoRtaGetAllChats,index:number) => {
                      });
                   this.mensajes=rta.mensajes
                   this.idDelChat=rta.chat.id
+                 
+
                  }
                  else {
                   this.idDelChat=0;
 
                  }
+                 if(this.isMobile) {
+                  this.contraer=true;
+                 }
+
                },
                error: (err) => {
                  console.error(err);
@@ -183,13 +240,18 @@ onUsuarioSeleccionado=(chat:ObjetoRtaGetAllChats,index:number) => {
     //cargo los mensajes entre el emisor y el receptor
    this.chatApi.getMsgCon(this.usuarioSeleccionadoId).subscribe({
                next:(rta:RtaGetMsgCon)=>{
+                //agrego a un contacto=> puede o no existir chat, no mas lo agrego a la lista de mis contactos
+                //si existe chat entre los dos usuarios
                  if(rta.chat){
                   this.idDelChat=rta.chat.id
                   // marco al último mensaje como leído 
                   
                  }
                  else {
-                   this.idDelChat=0;
+                  if(this.isMobile) 
+                    this.contraer=true; //indica que es un nuevo chat
+                  else this.idDelChat=0; 
+
                 }
                 this.mensajes=rta.mensajes
                },

@@ -1,4 +1,4 @@
-import { Component ,inject} from '@angular/core';
+import { Component ,inject, Input} from '@angular/core';
 import { AuthService } from '../../core/services/auth.service';
 @Component({
   selector: 'app-menu',
@@ -9,4 +9,8 @@ import { AuthService } from '../../core/services/auth.service';
 })
 export class MenuComponent {
 public AuthService = inject(AuthService);
+@Input() restore: ()=>void = ()=>{};
+@Input() isMobile: boolean = false;
+@Input() contraer:boolean=false;
+
 }

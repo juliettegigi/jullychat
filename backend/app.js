@@ -29,8 +29,7 @@ app.use((req, res, next) => {
   next();
 });
 
-//sirviendo Angular estático
-app.use(express.static(angularPath));
+
 
 
 /* 🚫 NO CORS en producción */
@@ -52,6 +51,11 @@ app.use('/api/contactos', contactosRouter);
 app.use('/api/chats', chatsRouter);
 app.use('/api/uploads', uploadsRouter);
 app.use('/api/uploadsCloudinary', uploadsCloudinaryRouter);
+
+
+//sirviendo Angular estático
+app.use(express.static(angularPath));
+
 
 app.get('*', (req, res) => {
   res.sendFile(path.join(angularPath, 'index.html'));
