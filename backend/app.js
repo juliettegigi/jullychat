@@ -59,12 +59,15 @@ app.use('/api/uploadsCloudinary', uploadsCloudinaryRouter);
 
 
 //sirviendo Angular estático
-app.use(express.static(angularPath));
+/*
 
+app.use(express.static(angularPath));
 
 app.get('*', (req, res) => {
   res.sendFile(path.join(angularPath, 'index.html'));
 });
+
+*/
 
 
 db.sequelize.authenticate()// 👈 NUEVO
