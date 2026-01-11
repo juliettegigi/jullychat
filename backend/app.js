@@ -64,7 +64,7 @@ app.use('/api/uploadsCloudinary', uploadsCloudinaryRouter);
 app.use(express.static(angularPath));
 
 app.get('*', (req, res) => {
-  res.sendFile(path.join(angularPath, 'index.csr.html'));
+  res.sendFile(path.join(angularPath, 'index.html'));
 });
 
 
