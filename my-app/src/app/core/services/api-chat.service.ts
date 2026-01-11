@@ -12,7 +12,7 @@ export class ChatApiService {
   //private apiUrl= `${this.API_URL}/api/chats/`;
  
   private http =inject(HttpClient)
-  private apiUrl=`${environment.apiUrl}/api/chats`;
+  private apiUrl=`${environment.apiUrl}/api/chats/`;
   //constructor(private http: HttpClient) {}
 
 
