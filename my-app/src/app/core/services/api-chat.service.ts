@@ -1,17 +1,18 @@
-import { Injectable,inject, PLATFORM_ID } from '@angular/core';
+import { Injectable,inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { environment } from '../../../environments/environment'
 import { Chat, RtaGetMsgCon,RtaPost,RtaGetAllChats, RtaPatchClavaVisto } from '../models/chat';
-import { getApiUrl } from '../config/api.config';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ChatApiService {
-  private platformId = inject(PLATFORM_ID);
-  private API_URL = getApiUrl(this.platformId);
-  private apiUrl= `${this.API_URL}/api/chats/`;
+  //private API_URL = getApiUrl(this.platformId);
+  //private apiUrl= `${this.API_URL}/api/chats/`;
+ 
   private http =inject(HttpClient)
+  private apiUrl=`${environment.apiUrl}/api/chats`;
   //constructor(private http: HttpClient) {}
 
 

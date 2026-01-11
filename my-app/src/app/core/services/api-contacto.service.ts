@@ -1,17 +1,19 @@
-import { Injectable,inject, PLATFORM_ID } from '@angular/core';
+import { Injectable,inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+
+import { environment } from '../../../environments/environment'
 import { RtaPost,Contacto} from '../models/contacto';
 import { User } from '../models/user';
-import { getApiUrl } from '../config/api.config';
+//import { getApiUrl } from '../config/api.config';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ContactoApiService {
-  private platformId = inject(PLATFORM_ID);
-  private API_URL = getApiUrl(this.platformId);
-  private apiUrl = `${this.API_URL}/api/contactos/`;
+ // private platformId = inject(PLATFORM_ID);
+  //private API_URL = getApiUrl(this.platformId);
+  private apiUrl = `${environment.apiUrl}/api/contactos/`;
   private http =inject(HttpClient)
 
 

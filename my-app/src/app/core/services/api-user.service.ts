@@ -1,18 +1,19 @@
-import { Injectable,inject, PLATFORM_ID } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { Injectable,inject } from '@angular/core';
+import { HttpClient ,HttpHeaders} from '@angular/common/http';
 import { Observable } from 'rxjs';
+
+import { environment } from '../../../environments/environment'
 import { GetUserByIdResponse, rtaLogin, User } from '../models/user';
-import { getApiUrl } from '../config/api.config';
-import { HttpHeaders } from '@angular/common/http';
+//import { getApiUrl } from '../config/api.config';
 
 @Injectable({
   providedIn: 'root'
 })
 export class UserApiService {
-   private platformId = inject(PLATFORM_ID);
-   private API_URL = getApiUrl(this.platformId);
-  private apiUrlSesion = `${this.API_URL}/api/sesion/`;
-  private apiUrlUsuario = `${this.API_URL}/api/users/`;
+  // private platformId = inject(PLATFORM_ID);
+   //private API_URL = getApiUrl(this.platformId);
+  private apiUrlSesion = `${environment.apiUrl}/api/sesion/`;
+  private apiUrlUsuario = `${environment.apiUrl}/api/users/`;
   private http =inject(HttpClient)
   //constructor(private http: HttpClient) {}
 

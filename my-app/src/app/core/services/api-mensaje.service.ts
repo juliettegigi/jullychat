@@ -1,6 +1,8 @@
-import { Injectable,inject, PLATFORM_ID} from '@angular/core';
+import { Injectable,inject} from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+
+import { environment } from '../../../environments/environment'
 import {  Mensaje } from '../models/mensaje';
 import { getApiUrl } from '../config/api.config';
 
@@ -8,9 +10,9 @@ import { getApiUrl } from '../config/api.config';
   providedIn: 'root'
 })
 export class MensajeApiService {
-  private platformId = inject(PLATFORM_ID);
-  private API_URL = getApiUrl(this.platformId);
-  private apiUrl = `${this.API_URL}/api/mensajes/`;
+ // private platformId = inject(PLATFORM_ID);
+ // private API_URL = getApiUrl(this.platformId);
+  private apiUrl = `${environment.apiUrl}/api/mensajes/`;
   private http =inject(HttpClient)
 
 
