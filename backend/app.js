@@ -36,13 +36,18 @@ app.use((req, res, next) => {
 
 
 
+/* CORS según entorno */
+const allowedOrigins =
+  process.env.NODE_ENV === 'production'
+    ? ['https://jullychat.onrender.com'] // FRONTEND
+    : ['http://localhost:4200'];
 
-/* 🚫 NO CORS en producción */
-if (process.env.NODE_ENV !== 'production') {
-  app.use(cors({
-    origin: 'http://localhost:4200'
-  }));
-}
+app.use(cors({
+  origin: allowedOrigins,
+  credentials: true
+}));
+
+
 app.use(fileUpload({
     useTempFiles : true,
     tempFileDir: path.join(__dirname, 'tmp')
