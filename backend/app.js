@@ -12,6 +12,11 @@ var contactosRouter = require('./routes/contactos');
 var chatsRouter = require('./routes/chats');
 var uploadsRouter = require('./routes/uploads');
 var uploadsCloudinaryRouter = require('./routes/uploads-cloudinary');
+
+
+const db = require('./models');// 👈 NUEVO
+
+
 const angularPath = path.join(
   __dirname,
   '../my-app/dist/my-app/browser'
@@ -61,5 +66,17 @@ app.get('*', (req, res) => {
   res.sendFile(path.join(angularPath, 'index.html'));
 });
 
+
+db.sequelize.authenticate()// 👈 NUEVO
+  .then(() => {
+    console.log('✅ Conectado a la base de datos');
+    return db.sequelize.sync({ alter: true });
+  })
+  .then(() => {
+    console.log('✅ Tablas sincronizadas');
+  })
+  .catch(err => {
+    console.error('❌ Error DB:', err);
+  });
 
 module.exports = app;
